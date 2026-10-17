@@ -1,48 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-   
-   
-    
-  </head>
-  <body>
-    <main>
-    </main>
-    <script src="sketch.js"></script>
-  <br>  
-<!-- My Programming Starts below this line  -->
-    
-    <h1> Dipole Length Calculator  </h1>
-    <h4>.-.. . VU2SRB </h4>
-    
-    
-   
-    
-    ========> <input id='In1'  value=14.2  ><===  Enter Frequency in MHz </input>
-      <br> <hr>
-    <button id='b1' class="Button"onclick='funb1()'> Calculate Length of Each Side </button>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172554">
+  <title>Dipole Length Lab | VU2SRB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="topline"><span class="radio-badge">📻 AMATEUR RADIO LAB</span><span class="callsign">VU2SRB</span></div>
+      <div class="hero-copy">
+        <p class="eyebrow">TUNE IN • CALCULATE • GET ON THE AIR</p>
+        <h1>Dipole Length<br><span>Calculator</span></h1>
+        <p class="intro">Turn a frequency into a practical starting length for your wire antenna.</p>
+      </div>
+      <div class="antenna-art" role="img" aria-label="Illustration of a dipole antenna radiating radio waves">
+        <svg viewBox="0 0 340 180" aria-hidden="true">
+          <defs><linearGradient id="wire" x1="0" x2="1"><stop stop-color="#fef08a"/><stop offset="1" stop-color="#fb923c"/></linearGradient></defs>
+          <path d="M30 42 Q170 -15 310 42" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="5 8" opacity=".8"/>
+          <path d="M55 64 Q170 8 285 64" fill="none" stroke="#c4b5fd" stroke-width="3" stroke-dasharray="5 8"/>
+          <path d="M82 83 Q170 42 258 83" fill="none" stroke="#67e8f9" stroke-width="3" stroke-dasharray="5 8"/>
+          <path d="M24 106 H157 M183 106 H316" stroke="url(#wire)" stroke-width="8" stroke-linecap="round"/>
+          <circle cx="170" cy="106" r="17" fill="#f8fafc" stroke="#fbbf24" stroke-width="5"/>
+          <path d="M170 124 V148" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
+          <path d="M155 148 H185" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="24" cy="106" r="6" fill="#fb923c"/><circle cx="316" cy="106" r="6" fill="#fb923c"/>
+          <text x="34" y="134" fill="#dbeafe" font-size="11">¼ wavelength</text><text x="235" y="134" fill="#dbeafe" font-size="11">¼ wavelength</text>
+          <path d="M67 155 Q170 170 273 155" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+          <text x="170" y="174" fill="#e0e7ff" font-size="10" text-anchor="middle">FEED POINT</text>
+        </svg>
+        <span class="spark spark-one">✦</span><span class="spark spark-two">✧</span>
+      </div>
+      <div class="hero-footer"><span>📡 HF ANTENNA WORKSHOP</span><span>DESIGNED FOR HAMS, BY A HAM</span></div>
+    </header>
 
-      
-    <p id='topLine'>*********** </p>
-    <p id='L1'> ************ </p>
-    <p id="L2"> ************ </p>
-   
-    <br><br><br>
-    <h5> Last Modified on :29 July , 2023 </h5>
- 
-<hr>
-      <a href="https://srbee.github.io/srbee/">Back to SRB;s  Main Page on github  </a>
-<hr>
-      
+    <section class="calculator card">
+      <div class="section-title"><span class="icon">🎛️</span><div><h2>Set your frequency</h2><p>Enter the operating frequency in megahertz (MHz).</p></div></div>
+      <form id="calcForm" novalidate>
+        <label for="frequency">FREQUENCY <span>(MHz)</span></label>
+        <div class="input-row"><input id="frequency" name="frequency" type="number" min="1" max="1000" step="any" value="14.2" inputmode="decimal" required><span class="unit">MHz</span></div>
+        <div class="quick-frequencies"><span>Quick picks:</span><button type="button" data-frequency="3.5">80m</button><button type="button" data-frequency="7.074">40m</button><button type="button" data-frequency="14.074">20m</button><button type="button" data-frequency="21.074">15m</button><button type="button" data-frequency="28.074">10m</button></div>
+        <button class="calculate" type="submit">⚡ CALCULATE MY DIPOLE <span>→</span></button>
+        <p class="error" id="error" role="alert" hidden>Please enter a frequency greater than zero.</p>
+      </form>
+    </section>
 
-    
-      
-    
-    
-  </body>
+    <section class="results" id="results" aria-live="polite">
+      <div class="results-heading"><span>📏</span><div><h2>Your antenna dimensions</h2><p id="resultFrequency">For 14.2 MHz</p></div></div>
+      <div class="result-grid">
+        <article class="result-card feet-card"><div class="result-label">EACH ARM</div><div class="big-number" id="feetMain">16 <small>ft</small></div><div class="detail" id="feetDetail">5.63 inches</div><div class="ruler">📐 <span>FEET + INCHES</span></div></article>
+        <article class="result-card metric-card"><div class="result-label">EACH ARM</div><div class="big-number" id="metricMain">5 <small>m</small></div><div class="detail" id="metricDetail">5.63 cm</div><div class="ruler">📏 <span>METRES + CM</span></div></article>
+      </div>
+      <div class="full-length"><span>↔️ Total wire length (both arms)</span><strong id="totalLength">33 ft 11.26 in</strong></div>
+      <div class="diagram">
+        <div class="diagram-label">YOUR DIPOLE AT A GLANCE</div>
+        <div class="wire-diagram"><span class="arm"></span><span class="feed">●<small>FEED</small></span><span class="arm"></span></div>
+        <div class="arm-labels"><span>Arm 1</span><span>Arm 2</span></div>
+        <p>Two equal arms • centre-fed • keep both sides equal</p>
+      </div>
+    </section>
+
+    <section class="tip card"><div class="tip-icon">💡</div><div><h3>Builder's note</h3><p>This uses the classic <strong>234 ÷ frequency (MHz)</strong> formula for the length of <em>each arm</em>, in feet. It is a starting estimate—trim and tune your antenna in its actual installation using an SWR meter or antenna analyser.</p></div></section>
+    <footer><div class="footer-mark">📡</div><p><strong>73 de VU2SRB</strong><br>Made for curious radio amateurs.</p><span class="footer-morse">· − · · &nbsp; · · · −</span></footer>
+  </main>
+  <script src="sketch.js"></script>
+</body>
 </html>
