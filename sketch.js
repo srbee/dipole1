@@ -1,32 +1,47 @@
-function setup() {
-  createCanvas(10, 10);
-}
+// Dipole Length Lab — VU2SRB
+// Classic estimate: each arm (feet) = 234 / frequency in MHz.
+(function () {
+  const form = document.getElementById('calcForm');
+  const input = document.getElementById('frequency');
+  const error = document.getElementById('error');
 
-function draw() {
-  background(220);
-}
+  function showResult() {
+    const frequency = Number(input.value);
+    if (!Number.isFinite(frequency) || frequency <= 0 || frequency > 1000) {
+      error.hidden = false;
+      input.setAttribute('aria-invalid', 'true');
+      return;
+    }
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
+    const feet = 234 / frequency;
+    const wholeFeet = Math.floor(feet);
+    const inches = (feet - wholeFeet) * 12;
+    const metres = feet * 0.3048;
+    const wholeMetres = Math.floor(metres);
+    const centimetres = (metres - wholeMetres) * 100;
+    const totalFeetExact = feet * 2;
+    const totalFeet = Math.floor(totalFeetExact);
+    const totalInches = (totalFeetExact - totalFeet) * 12;
 
-function funb1(){
-// this function handles the button to calculate dipole length
-    unitFeet=' feet'
-    unitInch=' inches'
-    unitMeter=' meters'
-    unitcm='  centimeters'
-    
-    feetInch=234/In1.value
-    
-    Feet=Math.trunc(feetInch)
-    Inch=((feetInch-Feet)*12).toFixed(2)
-    
-    metersCm=feetInch*0.3048
-    
-    Meters=Math.trunc(metersCm)
-    cm=((metersCm-Meters)*100).toFixed(2)
-    
-    // b1p.innerHTML=(234/(In1.value)).toString()
-   // b1p.innerHTML=String(234/(In1.value))
-    topLine.innerHTML='For frequency of '+In1.value+' Mhz'
-    L1.innerHTML='Each Side ='+String(Feet)+'    '+' feet'+'   and '+Inch+' inches'
-    L2.innerHTML='Each Side ='+String(Meters)+'    '+" meters "+'   and '+cm+' cm'
-    //L3.innerHTML=feetInch+' feet'
+    document.getElementById('resultFrequency').textContent = 'For ' + frequency.toLocaleString(undefined, {maximumFractionDigits: 6}) + ' MHz';
+    document.getElementById('feetMain').innerHTML = wholeFeet + ' <small>ft</small>';
+    document.getElementById('feetDetail').textContent = inches.toFixed(2) + ' inches';
+    document.getElementById('metricMain').innerHTML = wholeMetres + ' <small>m</small>';
+    document.getElementById('metricDetail').textContent = centimetres.toFixed(2) + ' cm';
+    document.getElementById('totalLength').textContent = totalFeet + ' ft ' + totalInches.toFixed(2) + ' in  •  ' + (metres * 2).toFixed(3) + ' m';
   }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    showResult();
+  });
+  document.querySelectorAll('[data-frequency]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      input.value = button.dataset.frequency;
+      showResult();
+    });
+  });
+  input.addEventListener('input', function () { if (!error.hidden) showResult(); });
+  showResult();
+})();
